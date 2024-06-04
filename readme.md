@@ -34,4 +34,21 @@ fje -f [FILEPATH] -s [N] -i [N]
 .\fje.exe -f [FILEPATH] -s [N] -i [N]
 ```
 
-其中`[FILEPATH]`为json文件路径，`[N]`为正整数；`-s`代表绘制风格，1代表树形，2代表矩形；`-i`代表图标族，默认取值为`1`或`2`。在添加新的风格或图标族后，上述取值可以继续增加。
+其中`[FILEPATH]`为json文件路径，`[N]`为正整数；`-s`代表绘制风格，1代表树形，2代表矩形；`-i`代表图标族，默认取值为`1`或`2`。在添加新的风格或图标族后，上述取值可以继续增加。具体用例如：
+
+```
+jfe -f example\data.json -s 1 -i 1
+```
+
+成功运行后，程序将在终端输出以下内容：
+
+```
+├─♢apples
+│  ├─♧gala
+│  └─♧pink lady
+└─♢oranges
+   └─♢mandarin
+      ├─♧clementine
+      └─♧tangerine: "cheap & juicy!"
+```
+
