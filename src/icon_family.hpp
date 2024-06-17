@@ -26,7 +26,7 @@ public:
 //对于继承类,只需实现自己的构造器,并为父类构造器提供特定字符即可
 class Icon1:public Icon{
 public:
-    Icon1():Icon("\u2662","\u2667"){}
+    Icon1():Icon("♢","♧"){}
 };
 
 class Icon2:public Icon{
