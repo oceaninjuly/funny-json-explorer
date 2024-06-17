@@ -2,9 +2,13 @@
 
 ## 概述
 
-​		本项目的类图如下：
+​		该版本由master分支版本经过微调得来，添加了新的迭代器类，类图如下：
 
-![image-20240604105332573](.\img\image-20240604105332573.png)
+![Snipaste_2024-06-17_17-40-12](E:\typora_tempfig\Snipaste_2024-06-17_17-40-12.png)
+
+​		其中`ComponentIter`为新添加的关于`Component`的迭代器模式。由于本项目的`draw`流程对迭代顺序有严格要求，又因为子节点在父节点的`childs`列表顺位，以及父节点在运行`draw`算法的时候所得到的前缀，也直接影响到子节点在`draw`时的输出样式，因此只能在`ComponentIter`中维护这些信息，并在迭代器中又定义了`draw`函数，使用户无需关心这些信息，只需传入`style`即可。
+
+​		由于本项目在初代版本中，关于绘制风格的替换已经采用了策略模式，因此不再做额外的改动，直接沿用。
 
 ​		下面是对于每个类的详细说明。
 
@@ -27,7 +31,7 @@
 
   - `JsonExplorer(int style_id, int icon_id)`: 构造函数，初始化图标工厂和样式工厂的 ID。
   - `_load(std::string filename)`: 从文件加载 JSON，预处理并解析为组件树。
-  - `show()`: 显示 JSON 组件树。
+  - `show()`: 通过使用迭代器`ComponentIter`迭代`Componet`数据结构，显示 JSON 组件树。
   - `parse_json(const json& j, const std::string& key, int level)`: 递归解析 JSON 对象和数组，生成对应的组件树。
 
 ​		这里使用了建造者方法，`jsonexplorer`只需使用`abstract_factory.hpp`中的工厂方法来建造`Icon`类和`Style`类，而无需关心细节，便于以同样的方式使用不同的`Icon`和`Style`。
@@ -89,9 +93,45 @@
 
 ​		上述基类以及继承类使用了组合模式，为了能基于Component形成一个关于json的树状结构，并能将其容纳在同一容器里，便于管理。
 
+#### ComponentIter类
 
+- **功能**: 实现了迭代器模式，用于遍历树形结构中的 `Component` 对象。该类通过递归遍历的方式，逐步访问和绘制每个组件（包括容器和叶子节点），并且可以处理复杂的层次结构。
+
+- 成员变量：
+
+  - `std::vector<shared_ptr<Component>>* childs`: 
+
+    指向当前组件的子组件列表的指针。如果当前组件是叶子节点，则该指针为 `nullptr`。
+
+  - `shared_ptr<Component> head`:当前迭代器所指向的组件。
+
+  - `std::string prefix`:绘制组件时的前缀字符串，用于显示层次结构。
+
+  - `int max_len`:绘制时的最大长度，用于调整输出格式。
+
+  - `int flag`:标志位，用于标记当前组件在树结构中的位置（例如，是否是最后一个子节点）。
+
+  - `int iter_num`:当前迭代器遍历到的子组件索引，初始值为 `-1`。
+
+  - `shared_ptr<ComponentIter> current`:当前子组件的迭代器，用于递归遍历。
+
+- 方法：
+
+  - 构造函数**`ComponentIter(shared_ptr<Component> component, int max_len_, int f=0, std::string pre="")`**：
+
+    初始化迭代器，设置初始组件、最大长度、标志位和前缀。
+
+  - **`bool has_more()`**: 检查是否还有更多的子组件需要遍历。返回 `true` 如果有更多的子组件需要遍历，否则返回 `false`。
+
+  - **`bool is_end()`**: 检查是否已到达当前组件的遍历结束。返回 `true` 如果当前组件已遍历完毕，否则返回 `false`。
+
+  - **`void next()`**: 移动到下一个子组件。
+
+  - **`void draw(Style& style)`** 使用指定的样式绘制当前组件。如果 `iter_num` 为 `-1`，绘制当前组件的头部。否则，递归调用子组件迭代器的 `draw` 方法绘制子组件。
 
 ## `style_family.hpp`
+
+​		采用了策略模式，将绘制的具体算法抽象成一个策略类，使得样式的替换只需补全一个新的继承类即可，而无需再改动`Component`中的代码。
 
 ### `Style` 类
 
