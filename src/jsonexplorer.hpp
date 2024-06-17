@@ -72,7 +72,10 @@ public:
         shared_ptr<Icon> icon=icon_factory.create();
         shared_ptr<Style> style=style_factory.create(icon);
         if(root!=nullptr){
-            root->draw(*style,"",max_len);
+            ComponentIter iter(root,max_len);
+            for(iter;!iter.is_end();iter.next()){
+                iter.draw(*style);
+            }
         }else{
             std::cout<<"file not loaded.\n";
         }

@@ -3,6 +3,7 @@
 #include<components.hpp>
 #include<icon_family.hpp>
 #include<style_family.hpp>
+
 using namespace std;
 
 int main(){
@@ -19,10 +20,8 @@ int main(){
     c2->add(c3);
     c1->add(c2);
     c1->add(make_shared<Leaf>("M3",1,"leaf3"));
-    c1->draw(style,"");
-    std::string str="└──";
-    for(int i=0;i<9-3;i++){
-        str+="─";
+    ComponentIter iter(c1,30);
+    for(iter;!iter.is_end();iter.next()){
+        iter.draw(style);
     }
-    cout<<str;
 }
