@@ -4,7 +4,7 @@
 
 ​		该版本由master分支版本经过微调得来，添加了新的迭代器类，类图如下：
 
-![Snipaste_2024-06-17_17-40-12](E:\typora_tempfig\Snipaste_2024-06-17_17-40-12.png)
+![Snipaste_2024-06-17_17-40-12](https://github.com/oceaninjuly/funny-json-explorer/blob/branch1/doc/img/Snipaste_2024-06-17_17-40-12.png)
 
 ​		其中`ComponentIter`为新添加的关于`Component`的迭代器模式。由于本项目的`draw`流程对迭代顺序有严格要求，又因为子节点在父节点的`childs`列表顺位，以及父节点在运行`draw`算法的时候所得到的前缀，也直接影响到子节点在`draw`时的输出样式，因此只能在`ComponentIter`中维护这些信息，并在迭代器中又定义了`draw`函数，使用户无需关心这些信息，只需传入`style`即可。
 
